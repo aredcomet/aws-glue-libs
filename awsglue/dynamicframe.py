@@ -12,7 +12,7 @@
 
 import json
 from awsglue.utils import makeOptions, callsite
-from itertools import imap, ifilter
+from builtins import map, filter
 from awsglue.gluetypes import _deserialize_json_string, _create_dynamic_record, _revert_to_dict, _serialize_schema
 from awsglue.utils import _call_site, _as_java_list, _as_scala_option, _as_resolve_choiceOption
 from pyspark.rdd import RDD, PipelinedRDD
@@ -82,7 +82,7 @@ class DynamicFrame(object):
                     return True
 
         def func(iterator):
-            return ifilter(wrap_dict_with_dynamic_records, iterator)
+            return filter(wrap_dict_with_dynamic_records, iterator)
         return self.mapPartitions(func, True, transformation_ctx, info, stageThreshold, totalThreshold)
 
     def mapPartitions(self, f, preservesPartitioning=True, transformation_ctx="", info="", stageThreshold=0, totalThreshold=0):
@@ -106,7 +106,7 @@ class DynamicFrame(object):
                 x['errorMessage'] = E.message
                 return x
         def func(_, iterator):
-            return imap(wrap_dict_with_dynamic_records, iterator)
+            return map(wrap_dict_with_dynamic_records, iterator)
         return self.mapPartitionsWithIndex(func, preservesPartitioning, transformation_ctx, info, stageThreshold, totalThreshold)
 
     def mapPartitionsWithIndex(self, f, preservesPartitioning=False, transformation_ctx = "", info = "", stageThreshold = 0,totalThreshold = 0):
@@ -116,7 +116,7 @@ class DynamicFrame(object):
                                             long(totalThreshold)), self.glue_ctx, self.name)
 
     def printSchema(self):
-        print self._jdf.schema().treeString()
+        print(self._jdf.schema().treeString())
 
     def toDF(self, options = None):
         """
